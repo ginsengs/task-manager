@@ -1,0 +1,17 @@
+version: '3'
+services:
+  auth:
+    build: ./services/auth
+    command: npm run start:debug -- --tsc
+    ports:
+      - 3000:3000
+    volumes:
+      - ./services/auth/src:/app/src
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: tm
