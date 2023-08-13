@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
 import { AuthError } from './auth.errors';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
 type SignInDto = {
     username: string;
@@ -38,6 +38,7 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @Get('profile')
     getProfile(@Req() req) {
-      return req.user;
+        console.info('Get Profile');
+        return req.user;
     }
 }

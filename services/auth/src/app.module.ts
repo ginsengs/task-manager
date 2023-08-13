@@ -7,13 +7,11 @@ import { PrismaService } from './prisma.service';
 import { UsersController } from './users/users.controller';
 import { EventsService } from './events/events.service';
 
-// todo
-const mostSooSecret = 'secret';
 
 @Module({
   imports: [
     JwtModule.register({
-      secret: mostSooSecret,
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' }, // todo
     }),
   ],
