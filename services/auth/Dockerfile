@@ -12,5 +12,7 @@ RUN npm ci
 COPY prisma prisma/
 COPY src/ src/
 
+RUN npx prisma generate
+
 # Build application (produces dist/ folder)
 CMD ["npm", "run", "start"]

@@ -10,9 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id    Int     @default(autoincrement()) @id
-  public_uuid String @unique
-  name  String
+  id          Int      @id @default(autoincrement())
+  public_uuid String   @unique @db.Uuid
+  username    String
+  beak_size   String
+  role        UserRole @default(USER)
+
+  @@unique([username, beak_size])
+  @@map("users")
+}
+
+enum UserRole {
+  USER    @map("user")
+  ADMIN   @map("admin")
+  MANAGER @map("manager")
+
+  @@map("user_role")
 }
