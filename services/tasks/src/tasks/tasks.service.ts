@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma.service';
 import { Prisma, Task, TaskStatus } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { EventsService } from '../events/events.service';
+import { TasksReassignSchemaV1, TasksReassignSchemaV1Type } from 'schema-regestry/schemas/tasks/reassign/v1';
+import { validate } from 'schema-regestry/schemas/validate';
 
 @Injectable()
 export class TasksService {
@@ -43,15 +45,15 @@ export class TasksService {
         });
 
         // event task created
-        this.events.emit('tasks.created', task);
+        this.events.emit('tasks.stream.created', task);
 
         return task;
     }
 
-    async changeAssigneeForTask(taskId: number, assigneeUuid: string) {
+    async changeAssigneeForTask(taskUuid: string, assigneeUuid: string) {
         const task = await this.prisma.task.update({
             where: {
-                id: taskId,
+                public_uuid: taskUuid
             },
             data: {
                 assignee_uuid: assigneeUuid,
@@ -67,13 +69,25 @@ export class TasksService {
                 status: TaskStatus.Pending,
             },
             select: {
-                id: true,
+                public_uuid: true,
             }
         });
 
-        tasks.forEach((t) => this.events.emit('tasks.reassign', {
-            taskId: t.id,
-            randomAssignee: true,
-        }));
+        for (const task of tasks) {
+            if (!validate(TasksReassignSchemaV1, task)) {
+                continue;
+            }
+            const event: TasksReassignSchemaV1Type = {
+                data: {
+                    task_uuid: task.public_uuid,
+                },
+                event_id: randomUUID(),
+                event_version: 1,
+                event_time: new Date(),
+                event_name: 'tasks.reassign',
+                producer: 'tasks',
+            };
+            this.events.emit('tasks.reassign', event);
+        }
     }
 }

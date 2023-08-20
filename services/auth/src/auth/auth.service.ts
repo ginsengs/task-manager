@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
@@ -57,8 +57,6 @@ export class AuthService {
         );
 
         const { beak_size, ...payload } = user;
-
-        this.events.emit('users.created', payload);
 
         return {
             accessToken,
