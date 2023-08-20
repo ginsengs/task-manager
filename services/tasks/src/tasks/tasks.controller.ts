@@ -8,6 +8,10 @@ type CreateTaskDto = {
     assignee_uuid: string;
 };
 
+type CloseTaskDto = {
+    task_uuid: string;
+}
+
 @UseGuards(AuthGuard)
 @Controller('tasks')
 export class TasksController {
@@ -36,5 +40,10 @@ export class TasksController {
             createTaskDto.title,
             createTaskDto.description
         );
+    }
+
+    @Post()
+    closeTask(@Body() closeTaskDto: CloseTaskDto) {
+        return this.taskService.closeTask(closeTaskDto.task_uuid);
     }
 }

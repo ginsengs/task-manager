@@ -1,17 +1,16 @@
 import { Type, Static } from '@sinclair/typebox'
 import { BaseEventProperties } from '../../base_event_v1';
 
-export const TasksCreatedSchemaV2 = Type.Object({
+export const TasksAssigneedSchemaV1 = Type.Object({
     ...BaseEventProperties,
     data: Type.Object({
         task_uuid: Type.String(),
-        title: Type.RegExp(/^[^\[]/), // not start with [
         assignee_uuid: Type.String(),
-        jira_id: Type.String(),
+        title: Type.String(),
         description: Type.String(),
         price: Type.Number(),
         status: Type.String(),
     }),
 });
 
-export type TasksCreatedSchemaV2Type = Static<typeof TasksCreatedSchemaV2>;
+export type TasksAssigneedSchemaV1Type = Static<typeof TasksAssigneedSchemaV1>;

@@ -29,6 +29,22 @@ services:
       - 3001:3000
     volumes:
       - ./services/tasks/src:/app/src
+      
+  accounting:
+    build: 
+      context: .
+      dockerfile: ./services/accounting/Dockerfile
+    command: npm run start:ts
+    depends_on:
+      - db
+      - kafka
+    environment:
+      - AUTH_URL=http://auth:3000
+    ports:
+      - 3002:3000
+    volumes:
+      - ./services/accounting/src:/app/src
+      
 
   kafka: 
     image: 'bitnami/kafka:latest'

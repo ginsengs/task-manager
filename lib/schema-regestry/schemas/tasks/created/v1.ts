@@ -6,6 +6,7 @@ export const TasksCreatedSchemaV1 = Type.Object({
     data: Type.Object({
         task_uuid: Type.String(),
         title: Type.String(),
+        assignee_uuid: Type.String(),
         description: Type.String(),
         price: Type.Number(),
         status: Type.String(),
