@@ -72,12 +72,12 @@
 Выписать все CUD события и какие данные нужны для этих событий, которые необходимы для работы системы. Отобразить кто из сервисов является продьюсером, а кто консьюмером CUD событий.
 
 **Auth Domain (Producer)**
-`account.created` { id; role_id; } - Consumers: Tasks Domain, Accounting Domain;
-`account.updated` { id; role_id; } - Consumers: Tasks Domain, Accounting Domain;
+`user.stream.created` { id; role_id; } - Consumers: Tasks Domain, Accounting Domain;
+`user.stream.updated` { id; role_id; } - Consumers: Tasks Domain, Accounting Domain;
 
 **Task Domain (Producer)**
-`task.created` { id; status; price; assignee_id; } - Consumers: Accounting Domain; Analytics Domain
-`task.updated` { id; status; price; assignee_id; } - Consumers: Accounting Domain; Analytics Domain
+`task.stream.created` { id; status; price; assignee_id; } - Consumers: Accounting Domain; Analytics Domain
+`task.stream.updated` { id; status; price; assignee_id; } - Consumers: Accounting Domain; Analytics Domain
 
 **Account Domain (Producer)**
 `finance_account.transaction.created` { id; task_id; finance_account_id; } - Consumers: Analytics
