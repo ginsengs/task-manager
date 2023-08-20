@@ -9,3 +9,21 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model FinancialAccount {
+  id           Int           @id @default(autoincrement())
+  public_uuid  String        @unique @db.Uuid
+  user_uuid    String
+  transactions Transaction[]
+
+  @@map("financial_accounts")
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+
+  account    FinancialAccount @relation(fields: [account_id], references: [id])
+  account_id Int
+  amount     Int
+  description String?
+}

@@ -3,9 +3,14 @@ import { AuthGuard } from '../auth/auth.guard';
 import { TasksService } from './tasks.service';
 
 type CreateTaskDto = {
+    title: string;
     description: string;
     assignee_uuid: string;
 };
+
+type CloseTaskDto = {
+    task_uuid: string;
+}
 
 @UseGuards(AuthGuard)
 @Controller('tasks')
@@ -30,6 +35,15 @@ export class TasksController {
 
     @Post()
     createTask(@Body() createTaskDto: CreateTaskDto) {
-        return this.taskService.createTask(createTaskDto.assignee_uuid, createTaskDto.description);
+        return this.taskService.createTask(
+            createTaskDto.assignee_uuid,
+            createTaskDto.title,
+            createTaskDto.description
+        );
+    }
+
+    @Post()
+    closeTask(@Body() closeTaskDto: CloseTaskDto) {
+        return this.taskService.closeTask(closeTaskDto.task_uuid);
     }
 }

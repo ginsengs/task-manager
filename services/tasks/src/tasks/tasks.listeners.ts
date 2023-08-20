@@ -2,6 +2,8 @@ import { MessagePattern, Payload } from "@nestjs/microservices";
 import { UsersService } from "../users/users.service";
 import { TasksService } from "./tasks.service";
 import { Controller, Logger } from "@nestjs/common";
+import { TasksReassignSchemaV1, TasksReassignSchemaV1Type } from 'schema-regestry/schemas/tasks/reassign/v1';
+import { validate } from 'schema-regestry/schemas/validate';
 
 @Controller()
 export class TasksListeners {
@@ -13,19 +15,15 @@ export class TasksListeners {
     ) { }
 
     @MessagePattern('tasks.reassign')
-    async reassign(@Payload() msg: { taskId: number; assigneUuid?: number; randomAssignee: boolean; }) {
+    async reassign(@Payload() msg: TasksReassignSchemaV1Type) {
         this.logger.log(`Reassing msg: ${JSON.stringify(msg)}`);
 
         try {
-            if (msg.randomAssignee) {
+            if (validate(TasksReassignSchemaV1, msg)) {
                 const ids = await this.usersService.getIds();
                 const user = ids[Math.floor(Math.random() * (ids.length - 1))];
-                console.log('user', user);
-                await this.tasksService.changeAssigneeForTask(msg.taskId, user.public_uuid);
-                return;
+                await this.tasksService.changeAssigneeForTask(msg.data.task_uuid , user.public_uuid);
             }
-
-            throw Error('TODO: assigneUuid not suppoted');
         } catch (err) {
             this.logger.error(err);
         }

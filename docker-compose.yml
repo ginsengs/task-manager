@@ -1,8 +1,10 @@
 version: '3'
 services:
   auth:
-    build: ./services/auth
-    command: npm run start:debug -- --tsc
+    build:
+      context: .
+      dockerfile: ./services/auth/Dockerfile
+    command: npm run start:ts
     depends_on:
       - db
       - kafka
@@ -14,8 +16,10 @@ services:
       - ./services/auth/src:/app/src
 
   tasks:
-    build: ./services/tasks
-    command: npm run start:debug
+    build: 
+      context: .
+      dockerfile: ./services/tasks/Dockerfile
+    command: npm run start:ts
     depends_on:
       - db
       - kafka
@@ -25,6 +29,22 @@ services:
       - 3001:3000
     volumes:
       - ./services/tasks/src:/app/src
+      
+  accounting:
+    build: 
+      context: .
+      dockerfile: ./services/accounting/Dockerfile
+    command: npm run start:ts
+    depends_on:
+      - db
+      - kafka
+    environment:
+      - AUTH_URL=http://auth:3000
+    ports:
+      - 3002:3000
+    volumes:
+      - ./services/accounting/src:/app/src
+      
 
   kafka: 
     image: 'bitnami/kafka:latest'
